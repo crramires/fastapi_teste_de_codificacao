@@ -3,10 +3,6 @@ from fastapi import FastAPI
 
 from fastapi_comercial.routers import clients_router
 
-# from shared.database import Base, engine
-
-# Base.metadata.drop_all(bind=engine)
-# Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 

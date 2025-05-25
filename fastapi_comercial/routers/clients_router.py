@@ -17,7 +17,7 @@ class ClientResponse(BaseModel):
     cpf: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ClientRequest(BaseModel):
@@ -31,6 +31,12 @@ def get_client(db: Session = Depends(get_db)) -> List[ClientResponse]:
     return db.query(Client).all()
 
 
+@router.get("/{id}", response_model=ClientResponse)
+def get_client_by_id(id: int, db: Session = Depends(get_db)) -> ClientResponse:
+    client: Client = db.query(Client).filter_by(id=id).first()
+    return client
+
+
 @router.post("", response_model=ClientResponse, status_code=201)
 def create_client(
     client_request: ClientRequest, db: Session = Depends(get_db)
@@ -42,3 +48,25 @@ def create_client(
     db.refresh(client)
 
     return client
+
+
+@router.put("/{id}", response_model=ClientResponse, status_code=200)
+def update_client(
+    id: int, client_request: ClientRequest, db: Session = Depends(get_db)
+) -> ClientResponse:
+    client = db.query(Client).get(id)
+    client.name = client_request.name
+    client.email = client_request.email
+    client.cpf = client_request.cpf
+
+    db.add(client)
+    db.commit()
+    db.refresh(client)
+    return client
+
+
+@router.delete("/{id}", status_code=204)
+def delete_client(id: int, db: Session = Depends(get_db)) -> None:
+    client = db.query(Client).filter_by(id)
+    db.delete(client)
+    db.commit()

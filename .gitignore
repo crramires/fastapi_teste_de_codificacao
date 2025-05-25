@@ -1,0 +1,52 @@
+# Ambiente virtual
+venv/
+.env
+
+# Bytecode e cache do Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Cache de testes
+.pytest_cache/
+.cache/
+
+# Arquivos de log
+*.log
+logs/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.DS_Store
+*.thumb
+*.orig
+
+# Arquivos SQLite (se usar futuramente)
+*.sqlite3
+*.db
+
+# Configurações do VSCode
+.vscode/
+
+# Arquivos do sistema operacional
+Thumbs.db
+Desktop.ini
+
+# Arquivos de configuração do Docker (se quiser ignorar build locais, descomente abaixo)
+# docker-compose.override.yml
+# .docker/
+
+# Arquivos de Alembic que são gerados automaticamente (opcional)
+# Se quiser ignorar migrations geradas, descomente abaixo:
+# alembic/versions/*.py
+
+# Arquivos específicos de builds (se algum dia gerar wheel ou dist)
+dist/
+build/
+*.egg-info/

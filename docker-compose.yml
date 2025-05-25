@@ -6,8 +6,8 @@ services:
     container_name: db_fast_api
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: testetecnico
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
       POSTGRES_DB: db_fast_api
     ports:
       - "5432:5432"
