@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -13,8 +13,23 @@ router = APIRouter(prefix="/clients")
 
 # List all clients
 @router.get("", response_model=List[ClientResponse])
-def get_client(db: Session = Depends(get_db)) -> List[ClientResponse]:
-    return db.query(Client).all()
+def get_client(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 10,
+    name: Optional[str] = None,
+    email: Optional[str] = None,
+):
+    query = db.query(Client)
+
+    if name:
+        query = query.filter(Client.name.ilike(f"%{name}%"))
+    if email:
+        query = query.filter(Client.email.ilike(f"%{email}%"))
+
+    client = query.offset(skip).limit(limit).all()
+
+    return client
 
 
 # List a client by id
