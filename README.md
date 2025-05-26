@@ -72,30 +72,40 @@ Usário e senha: Conforme definido no docker-compose.yml
 
 Clone o repositório:
 git clone https://github.com/seu-usuario/seu-repositorio.git
+
 cd seu-repositorio
 
 Crie e ative um ambiente virtual:
+
 python -m venv venv
+
 source venv/bin/activate  # Mac/Linux
+
 venv\Scripts\activate     # Windows
 
 Instale as dependências:
+
 pip install -r requirements.txt
 
 Configure o banco PostgreSQL localmente (ou use SQLite para testes rápidos).
+
 Execute as migrações (se houver) e rode o projeto:
+
 uvicorn main:app --reload
 
-Acesse a documentação:
-http://localhost:8000/docs
-
 📑 Documentação da API
+
 Acesse via navegador:
+
 http://localhost:8000/docs
 
 
 ✅ Como rodar os testes
+
 Execute os testes de integração utilizando pytest:
+
 pytest
+
 Caso queira rodar os testes com verbose para mais detalhes:
+
 pytest -v
