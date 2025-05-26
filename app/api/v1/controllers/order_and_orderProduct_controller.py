@@ -1,9 +1,11 @@
 from datetime import date
 from typing import List, Optional
 
+from core.security import get_current_admin_user, get_current_user
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.dependencies import get_db
 from app.models.order_and_orderProduct_model import (
     Order,
     OrderProduct,
@@ -15,8 +17,6 @@ from app.schemas.order_and_orderProduct_schema import (
     OrderResponse,
     OrderUpdateRequest,
 )
-from core.dependencies import get_db
-from core.security import get_current_admin_user, get_current_user
 
 router = APIRouter(prefix="/orders")
 

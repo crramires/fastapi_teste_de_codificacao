@@ -1,13 +1,13 @@
 from typing import List, Optional
 
+from core.security import get_current_admin_user, get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
+from app.core.dependencies import get_db
 from app.models.client_model import Client
 from app.schemas.client_schema import ClientRequest, ClientResponse
-from core.dependencies import get_db
-from core.security import get_current_admin_user, get_current_user
 
 router = APIRouter(prefix="/clients")
 
