@@ -7,12 +7,17 @@ from sqlalchemy.orm import Session
 from app.models.client_model import Client
 from app.schemas.client_schema import ClientRequest, ClientResponse
 from core.dependencies import get_db
+from core.security import get_current_admin_user, get_current_user
 
 router = APIRouter(prefix="/clients")
 
 
 # List all clients
-@router.get("", response_model=List[ClientResponse])
+@router.get(
+    "",
+    response_model=List[ClientResponse],
+    dependencies=[Depends(get_current_user)],
+)
 def get_client(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -33,7 +38,11 @@ def get_client(
 
 
 # List a client by id
-@router.get("/{id}", response_model=ClientResponse)
+@router.get(
+    "/{id}",
+    response_model=ClientResponse,
+    dependencies=[Depends(get_current_user)],
+)
 def get_client_by_id(id: int, db: Session = Depends(get_db)) -> ClientResponse:
     client = db.get(Client, id)
     if not client:
@@ -42,7 +51,12 @@ def get_client_by_id(id: int, db: Session = Depends(get_db)) -> ClientResponse:
 
 
 # Create a new client
-@router.post("", response_model=ClientResponse, status_code=201)
+@router.post(
+    "",
+    response_model=ClientResponse,
+    status_code=201,
+    dependencies=[Depends(get_current_user)],
+)
 def create_client(
     client_request: ClientRequest, db: Session = Depends(get_db)
 ) -> ClientResponse:
@@ -66,7 +80,12 @@ def create_client(
 
 
 # Update a client
-@router.put("/{id}", response_model=ClientResponse, status_code=200)
+@router.put(
+    "/{id}",
+    response_model=ClientResponse,
+    status_code=200,
+    dependencies=[Depends(get_current_user)],
+)
 def update_client(
     id: int, client_request: ClientRequest, db: Session = Depends(get_db)
 ) -> ClientResponse:
@@ -95,7 +114,9 @@ def update_client(
 
 
 # Delete a client
-@router.delete("/{id}", status_code=204)
+@router.delete(
+    "/{id}", status_code=204, dependencies=[Depends(get_current_admin_user)]
+)
 def delete_client(id: int, db: Session = Depends(get_db)) -> None:
     client = db.get(Client, id)
     if not client:

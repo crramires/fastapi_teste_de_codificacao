@@ -7,11 +7,16 @@ from sqlalchemy.orm import Session
 from app.models.product_model import Product
 from app.schemas.product_schema import ProductRequest, ProductResponse
 from core.dependencies import get_db
+from core.security import get_current_admin_user, get_current_user
 
 router = APIRouter(prefix="/products")
 
 
-@router.get("", response_model=List[ProductResponse])
+@router.get(
+    "",
+    response_model=List[ProductResponse],
+    dependencies=(Depends(get_current_user)),
+)
 def get_products(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -43,7 +48,11 @@ def get_products(
     return products
 
 
-@router.get("/{id}", response_model=ProductResponse)
+@router.get(
+    "/{id}",
+    response_model=ProductResponse,
+    dependencies=(Depends(get_current_user)),
+)
 def get_product_by_id(id: int, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == id).first()
     if not product:
@@ -52,7 +61,10 @@ def get_product_by_id(id: int, db: Session = Depends(get_db)):
 
 
 @router.post(
-    "", response_model=ProductResponse, status_code=status.HTTP_201_CREATED
+    "",
+    response_model=ProductResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=(Depends(get_current_user)),
 )
 def create_product(
     product_request: ProductRequest, db: Session = Depends(get_db)
@@ -78,7 +90,11 @@ def create_product(
         )
 
 
-@router.put("/{id}", response_model=ProductResponse)
+@router.put(
+    "/{id}",
+    response_model=ProductResponse,
+    dependencies=(Depends(get_current_user)),
+)
 def update_product(
     id: int, product_request: ProductRequest, db: Session = Depends(get_db)
 ):
@@ -101,7 +117,11 @@ def update_product(
         )
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=(Depends(get_current_admin_user)),
+)
 def delete_product(id: int, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == id).first()
     if not product:

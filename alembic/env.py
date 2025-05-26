@@ -20,6 +20,7 @@ from app.models.order_and_orderProduct_model import (  # pylint: disable=unused-
     OrderStatusEnum,
 )
 from app.models.product_model import Product  # pylint: disable=unused-import
+from app.models.user_model import User  # pylint: disable=unused-import
 
 # add your model's MetaData object here
 # for 'autogenerate' support

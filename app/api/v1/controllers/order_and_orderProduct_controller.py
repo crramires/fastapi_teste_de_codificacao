@@ -16,11 +16,16 @@ from app.schemas.order_and_orderProduct_schema import (
     OrderUpdateRequest,
 )
 from core.dependencies import get_db
+from core.security import get_current_admin_user, get_current_user
 
 router = APIRouter(prefix="/orders")
 
 
-@router.get("", response_model=List[OrderResponse])
+@router.get(
+    "",
+    response_model=List[OrderResponse],
+    dependencies=(Depends(get_current_user)),
+)
 def get_orders(
     client_id: Optional[int] = None,
     status: Optional[OrderStatusEnum] = None,
@@ -43,7 +48,10 @@ def get_orders(
 
 
 @router.post(
-    "", response_model=OrderResponse, status_code=status.HTTP_201_CREATED
+    "",
+    response_model=OrderResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=(Depends(get_current_user)),
 )
 def create_order(order_request: OrderRequest, db: Session = Depends(get_db)):
     order = Order(client_id=order_request.client_id)
@@ -84,7 +92,11 @@ def create_order(order_request: OrderRequest, db: Session = Depends(get_db)):
     return order
 
 
-@router.get("/{id}", response_model=OrderResponse)
+@router.get(
+    "/{id}",
+    response_model=OrderResponse,
+    dependencies=(Depends(get_current_user)),
+)
 def get_order_by_id(id: int, db: Session = Depends(get_db)):
     order = db.query(Order).filter(Order.id == id).first()
 
@@ -94,7 +106,11 @@ def get_order_by_id(id: int, db: Session = Depends(get_db)):
     return order
 
 
-@router.put("/{id}", response_model=OrderResponse)
+@router.put(
+    "/{id}",
+    response_model=OrderResponse,
+    dependencies=(Depends(get_current_admin_user)),
+)
 def update_order(
     id: int, order_request: OrderUpdateRequest, db: Session = Depends(get_db)
 ):
@@ -110,7 +126,11 @@ def update_order(
     return order
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=(Depends(get_current_admin_user)),
+)
 def delete_order(id: int, db: Session = Depends(get_db)):
     order = db.query(Order).filter(Order.id == id).first()
 
