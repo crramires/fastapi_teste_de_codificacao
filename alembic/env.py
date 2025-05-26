@@ -13,13 +13,12 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-from fastapi_comercial.models.client_model import (
-    Client,
-)  # pylint: disable=unused-import
+from app.models.client_model import Client  # pylint: disable=unused-import
+from app.models.product_model import Product  # pylint: disable=unused-import
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from shared.database import Base
+from core.database import Base
 
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata

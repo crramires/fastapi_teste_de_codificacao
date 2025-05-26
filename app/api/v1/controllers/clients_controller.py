@@ -1,30 +1,14 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.models.client_model import Client
+from app.schemas.client_schema import ClientRequest, ClientResponse
 from core.dependencies import get_db
 
 router = APIRouter(prefix="/clients")
-
-
-class ClientResponse(BaseModel):
-    id: int
-    name: str
-    email: str
-    cpf: str
-
-    class Config:
-        from_attributes = True
-
-
-class ClientRequest(BaseModel):
-    name: str
-    email: str
-    cpf: str
 
 
 # List all clients
@@ -71,15 +55,13 @@ def create_client(
 def update_client(
     id: int, client_request: ClientRequest, db: Session = Depends(get_db)
 ) -> ClientResponse:
-    client = db.get(Client, id)
+    client = db.query(Client).filter(Client.id == id).first()
     if not client:
         raise HTTPException(status_code=404, detail="Client not found")
 
     try:
-        client.name = client_request.name
-        client.email = client_request.email
-        client.cpf = client_request.cpf
-        db.add(client)
+        for attr, value in client_request.model_dump().items():
+            setattr(client, attr, value)
         db.commit()
         db.refresh(client)
         return client
