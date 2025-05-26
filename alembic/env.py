@@ -14,6 +14,11 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 from app.models.client_model import Client  # pylint: disable=unused-import
+from app.models.order_and_orderProduct_model import (  # pylint: disable=unused-import
+    Order,
+    OrderProduct,
+    OrderStatusEnum,
+)
 from app.models.product_model import Product  # pylint: disable=unused-import
 
 # add your model's MetaData object here
