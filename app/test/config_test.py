@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from app.core.database import Base
 from app.core.dependencies import get_db
 from main import app
 
@@ -14,15 +15,23 @@ TestingSessionLocal = sessionmaker(
 )
 
 
+@pytest.fixture(scope="session", autouse=True)
+def create_test_db():
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
+
+
 @pytest.fixture()
 def db_session():
     connection = engine.connect()
     transaction = connection.begin()
 
     session = TestingSessionLocal(bind=connection)
+
     try:
         yield session
-    except:
+    finally:
         session.close()
         transaction.rollback()
         connection.close()
@@ -40,3 +49,13 @@ def client(db_session):
     client = TestClient(app)
     yield client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def token_auth_headers():
+    return {"Authorization": "Bearer fake-token"}
+
+
+@pytest.fixture()
+def token_admin_headers():
+    return {"Authorization": "Bearer fake-admin-token"}
